@@ -46,16 +46,17 @@ export const sltCells = createSelector(
   [sltDaySum, sltList, sltColumns],
   (daySums, list, columns) => {
     const weekDates = getWeekDates();
-    
+
     const cells: Cell[][] = weekDates.map((date) => {
       const daySum = daySums[date];
       const daySumByRole = _.keyBy(daySum, "role");
 
-      const total = daySum?.reduce((total, ds) => {
-        return total + ds.value;
-      }, 0) ?? 0;
+      const total =
+        daySum?.reduce((total, ds) => {
+          return total + ds.value;
+        }, 0) ?? 0;
 
-      const result: Cell[] = columns.map((column) => {
+      const result: Cell[] = columns.map<Cell>((column) => {
         const key = column.key;
 
         switch (key) {
@@ -63,18 +64,21 @@ export const sltCells = createSelector(
             return {
               isDaySum: true,
               value: date,
+              disableEvents: true,
             };
           }
           case "total": {
             return {
               isDaySum: true,
               value: total,
+              disableEvents: true,
             };
           }
           default: {
             return {
               isDaySum: true,
-              value: daySumByRole[key ?? ""]?.value ?? 0,
+              value: daySumByRole[key]?.value ?? 0,
+              disableEvents: true,
             };
           }
         }

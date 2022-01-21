@@ -38,6 +38,12 @@ export const fetchManpowerDaySum = (): ThunkAction<
         role: "Cleaning Service",
         value: 1,
       },
+      {
+        id: "4",
+        date: "18 Jan 2022",
+        role: "Chef",
+        value: 4,
+      }
     ];
 
     dispatch(fetchManpowerDaySumSuccess(res));

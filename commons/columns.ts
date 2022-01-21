@@ -1,7 +1,7 @@
 import { CellValue } from "./types";
 
 export interface Column {
-  key?: string;
+  key: string;
   name: string;
   default?: CellValue;
   forceComponent?: boolean;
