@@ -1,7 +1,11 @@
 import ReactDataSheet from "react-datasheet";
-import { TargetManpowerCell } from "./models";
+import { TargetManpowerCell, TargetManpowerDaySum } from "./models";
 
-export type CellValue = number | null;
-export interface Cell extends ReactDataSheet.Cell<Cell, CellValue>, TargetManpowerCell {
+export type CellValue = string | number | null;
+
+export type PayloadCell = TargetManpowerCell | TargetManpowerDaySum;
+
+export interface Cell extends ReactDataSheet.Cell<Cell, CellValue> {
   value: CellValue;
+  isDaySum: boolean;
 }

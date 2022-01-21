@@ -7,11 +7,14 @@ import { Cell, CellValue } from "../commons/types";
 import CellRenderer from "../components/CellRenderer";
 import { useDispatch } from "react-redux";
 import { fetchManpowerDaySum } from "../store/targetManpower/operations";
+import { useAppSelector } from "../hooks";
+import { sltCells } from "../store/targetManpower/selector";
 
 export class MyReactDataSheet extends ReactDataSheet<Cell, CellValue> {}
 
 const Home: NextPage = () => {
   const dispatch = useDispatch();
+  const cells = useAppSelector(sltCells);
 
   useEffect(() => {
     dispatch(fetchManpowerDaySum());
@@ -34,9 +37,9 @@ const Home: NextPage = () => {
   return (
     <div className={styles.container}>
       <MyReactDataSheet
-        data={[]}
-        valueRenderer={(cell) => "-"}
-        dataRenderer={(cell) => "-"}
+        data={cells}
+        valueRenderer={(cell) => cell.value}
+        dataRenderer={(cell) => cell.value}
         sheetRenderer={onSheetRenderer}
         cellRenderer={onCellRenderer}
         onCellsChanged={(changes) => {

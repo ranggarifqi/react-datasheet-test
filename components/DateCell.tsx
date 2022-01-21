@@ -10,7 +10,6 @@ type Props = {
 
 const DateCell = (props: Props) => {
   const { children, cell } = props;
-  console.log(cell)
   return (
     <td>
       <span onClick={() => console.log("expand row")}>V</span> {children}

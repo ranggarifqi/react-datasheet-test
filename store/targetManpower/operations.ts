@@ -22,19 +22,19 @@ export const fetchManpowerDaySum = (): ThunkAction<
     const res: TargetManpowerDaySum[] = [
       {
         id: "1",
-        date: "17 January 2022",
+        date: "17 Jan 2022",
         role: "Chef",
         value: 2,
       },
       {
         id: "2",
-        date: "17 January 2022",
+        date: "17 Jan 2022",
         role: "Bartender",
         value: 2,
       },
       {
         id: "3",
-        date: "17 January 2022",
+        date: "17 Jan 2022",
         role: "Cleaning Service",
         value: 0,
       },

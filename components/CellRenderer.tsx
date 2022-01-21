@@ -7,7 +7,7 @@ const CellRenderer = (
   props: ReactDataSheet.CellRendererProps<Cell, CellValue>
 ) => {
   const { row, col, cell } = props;
-  if (defaultColumns[col].key === "date") {
+  if (defaultColumns[col]?.key === "date") {
     return <DateCell row={row} col={col} cell={cell}>{props.children}</DateCell>;
   }
   return <td>{props.children}</td>;
