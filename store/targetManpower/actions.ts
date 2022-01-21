@@ -14,3 +14,18 @@ export const fetchManpowerDaySumSuccess = createAction<TargetManpowerDaySum[]>(
 export const fetchManpowerDaySumError = createAction<Error>(
   "targetManpower/fetchManpowerDaySumError"
 );
+
+export const fetchManpowerDayCellsRequest = createAction<number>(
+  "targetManpower/fetchManpowerDayCellsRequest"
+);
+
+interface fetchManpowerDayCellsSuccessPayload {
+  rowIdx: number,
+  targetManpowerCells: TargetManpowerCell[]
+}
+export const fetchManpowerDayCellsSuccess = createAction<fetchManpowerDayCellsSuccessPayload>(
+  "targetManpower/fetchManpowerDayCellsSuccess"
+);
+export const fetchManpowerDayCellsError = createAction<Error>(
+  "targetManpower/fetchManpowerDayCellsError"
+);

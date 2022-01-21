@@ -18,7 +18,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     dispatch(fetchManpowerDaySum());
-  });
+  }, [dispatch]);
 
   const onSheetRenderer = useCallback(
     (props: ReactDataSheet.SheetRendererProps<Cell, CellValue>) => {

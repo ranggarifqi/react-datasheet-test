@@ -1,16 +1,20 @@
 import { ThunkAction } from "redux-thunk";
-import { TargetManpowerState } from "./reducer";
 import {
+  fetchManpowerDayCellsRequest,
+  fetchManpowerDayCellsSuccess,
   fetchManpowerDaySumRequest,
   fetchManpowerDaySumSuccess,
 } from "./actions";
 import { wait } from "../../commons/helpers";
 import { TargetManpowerActions } from ".";
-import { TargetManpowerDaySum } from "../../commons/models";
+import { TargetManpowerCell, TargetManpowerDaySum } from "../../commons/models";
+import { RootState } from "..";
+import { useAppSelector } from "../../hooks";
+import { sltCells } from "./selector";
 
 export const fetchManpowerDaySum = (): ThunkAction<
   Promise<void>,
-  TargetManpowerState,
+  RootState,
   {},
   TargetManpowerActions
 > => {
@@ -43,9 +47,44 @@ export const fetchManpowerDaySum = (): ThunkAction<
         date: "18 Jan 2022",
         role: "Chef",
         value: 4,
-      }
+      },
     ];
 
     dispatch(fetchManpowerDaySumSuccess(res));
   };
+};
+
+export const fetchTargetManpowerCells = (
+  rowIdx: number
+): ThunkAction<Promise<void>, RootState, {}, TargetManpowerActions> => {
+  return async (dispatch) => {
+    dispatch(fetchManpowerDayCellsRequest(rowIdx));
+
+    await wait(2000);
+
+    const manpowerCells = getDummyManpowerCells(rowIdx);
+
+    dispatch(
+      fetchManpowerDayCellsSuccess({
+        rowIdx,
+        targetManpowerCells: manpowerCells,
+      })
+    );
+  };
+};
+
+const getDummyManpowerCells = (rowIdx: number): TargetManpowerCell[] => {
+  if (rowIdx === 0) {
+    return [
+      {
+        id: "power1",
+        role: "Chef",
+        manPower: 4,
+        timeStart: "2022-01-17 08:00:00",
+        timeEnd: "2022-01-17 08:30:00",
+      },
+    ];
+  }
+
+  return [];
 };
