@@ -1,25 +1,16 @@
 import { createAction } from "@reduxjs/toolkit";
-import { SliceActions } from "..";
-import { TargetManpowerCell } from "../../commons/models";
+import { TargetManpowerCell, TargetManpowerDaySum } from "../../commons/models";
 
 export const setList = createAction<Dict<TargetManpowerCell[]>>(
   "targetManpower/setList"
 );
 
-export const fetchSelectedRolesRequest = createAction(
-  "targetManpower/fetchSelectedRolesRequest"
+export const fetchManpowerDaySumRequest = createAction(
+  "targetManpower/fetchManpowerDaySumRequest"
 );
-export const fetchSelectedRolesSuccess = createAction<string[]>(
-  "targetManpower/fetchSelectedRolesSuccess"
+export const fetchManpowerDaySumSuccess = createAction<TargetManpowerDaySum[]>(
+  "targetManpower/fetchManpowerDaySumSuccess"
 );
-export const fetchSelectedRolesError = createAction<string[]>(
-  "targetManpower/fetchSelectedRolesError"
+export const fetchManpowerDaySumError = createAction<Error>(
+  "targetManpower/fetchManpowerDaySumError"
 );
-
-const actions = {
-  fetchSelectedRolesRequest,
-  fetchSelectedRolesSuccess,
-  fetchSelectedRolesError,
-};
-
-export type TargetManpowerActions = SliceActions<typeof actions>

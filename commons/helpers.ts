@@ -5,3 +5,8 @@ export const wait = (ms: number) => {
     }, ms);
   });
 };
+
+export const compactArray = <T>(arr: T[]) => {
+  const set = new Set(arr)
+  return [...set]
+}
