@@ -1,0 +1,26 @@
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid gray;
+  font-size: 12px;
+}
+
+.table .cell {
+  cursor: crosshair;
+}
+
+.table .cell.selected {
+  background-color: #d9d9d9;
+}
+
+.th {
+  border: 1px solid gray;
+  min-width: 120px;
+  background: lightgray;
+
+  text-align: center;
+  padding: 0.5em;
+  z-index: 1;
+  position: sticky;
+  top: 0;
+}
