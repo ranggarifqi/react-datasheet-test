@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { createSelector } from "@reduxjs/toolkit";
 import { add, format, startOfISOWeek } from "date-fns";
 import { RootState } from "..";
@@ -38,28 +39,49 @@ const getWeekDates = () => {
     result.push(format(d, "d MMM yyyy"));
   }
 
-  return result
+  return result;
 };
 
 export const sltCells = createSelector(
   [sltDaySum, sltList, sltColumns],
   (daySums, list, columns) => {
-    const weekDates = getWeekDates()
-    const cells: Cell[][] = weekDates.map(date => {
-      const daySum = daySums[date]
-      console.log(daySum)
-      const result: Cell[] = columns.map(column => {
-        console.log(column)
-        return {
-          isDaySum: true,
-          value: 'zzz'
+    const weekDates = getWeekDates();
+    
+    const cells: Cell[][] = weekDates.map((date) => {
+      const daySum = daySums[date];
+      const daySumByRole = _.keyBy(daySum, "role");
+
+      const total = daySum?.reduce((total, ds) => {
+        return total + ds.value;
+      }, 0) ?? 0;
+
+      const result: Cell[] = columns.map((column) => {
+        const key = column.key;
+
+        switch (key) {
+          case "date": {
+            return {
+              isDaySum: true,
+              value: date,
+            };
+          }
+          case "total": {
+            return {
+              isDaySum: true,
+              value: total,
+            };
+          }
+          default: {
+            return {
+              isDaySum: true,
+              value: daySumByRole[key ?? ""]?.value ?? 0,
+            };
+          }
         }
-      })
+      });
 
-      // result[0]
-
-      return result
-    })
+      return result;
+    });
 
     return cells;
   }

@@ -36,7 +36,7 @@ export const fetchManpowerDaySum = (): ThunkAction<
         id: "3",
         date: "17 Jan 2022",
         role: "Cleaning Service",
-        value: 0,
+        value: 1,
       },
     ];
 
