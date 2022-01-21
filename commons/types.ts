@@ -1,6 +1,7 @@
 import ReactDataSheet from "react-datasheet";
+import { TargetManpowerCell } from "./models";
 
-export type CellValue = string | number | null;
-export interface Cell extends ReactDataSheet.Cell<Cell, CellValue> {
+export type CellValue = number | null;
+export interface Cell extends ReactDataSheet.Cell<Cell, CellValue>, TargetManpowerCell {
   value: CellValue;
 }

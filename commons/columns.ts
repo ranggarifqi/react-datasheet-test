@@ -9,8 +9,6 @@ export interface Column {
 }
 
 export const defaultColumns: Column[] = [
-  { key: 'date', name: "" },
-  { key: 'total', name: "total"},
-  { name: "Chef"},
-  { name: "Bartender"},
+  { key: 'date', name: "", disableEvents: true },
+  { key: 'total', name: "total", disableEvents: true},
 ];

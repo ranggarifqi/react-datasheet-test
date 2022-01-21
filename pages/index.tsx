@@ -9,11 +9,6 @@ import CellRenderer from "../components/CellRenderer";
 export class MyReactDataSheet extends ReactDataSheet<Cell, CellValue> {}
 
 const Home: NextPage = () => {
-  const [grid, setGrid] = useState<Cell[][]>([
-    [{ value: '17 January 2022' }, { value: '' }, { value: '' }, { value: '' }],
-    [{ value: '18 January 2022' }, { value: '' }, { value: '' }, { value: '' }],
-    [{ value: '19 January 2022' }, { value: '' }, { value: '' }, { value: '' }],
-  ]);
 
   const onSheetRenderer = useCallback(
     (props: ReactDataSheet.SheetRendererProps<Cell, CellValue>) => {
@@ -32,17 +27,18 @@ const Home: NextPage = () => {
   return (
     <div className={styles.container}>
       <MyReactDataSheet
-        data={grid}
-        valueRenderer={(cell) => cell.value === '' ? '-' : cell.value}
-        dataRenderer={(cell) => cell.value}
+        data={[]}
+        valueRenderer={(cell) => '-'}
+        dataRenderer={(cell) => '-'}
         sheetRenderer={onSheetRenderer}
         cellRenderer={onCellRenderer}
         onCellsChanged={(changes) => {
-          const newGrid = grid.map((row) => [...row]);
-          changes.forEach(({ cell, row, col, value }) => {
-            newGrid[row][col] = { ...newGrid[row][col], value };
-          });
-          setGrid(newGrid);
+          console.log(changes)
+          // const newGrid = grid.map((row) => [...row]);
+          // changes.forEach(({ cell, row, col, value }) => {
+          //   newGrid[row][col] = { ...newGrid[row][col], value };
+          // });
+          // setGrid(newGrid);
         }}
       />
     </div>
