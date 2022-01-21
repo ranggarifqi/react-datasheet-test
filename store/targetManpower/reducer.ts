@@ -1,13 +1,13 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { TargetManpowerCell } from "../../commons/models";
-import { setList, setSelectedRoles } from "./actions";
+import { fetchSelectedRolesSuccess, setList } from "./actions";
 
-interface targetManpowerState {
+export interface TargetManpowerState {
   list: Dict<TargetManpowerCell[]>;
   selectedRoles: string[];
 }
 
-const initialState: targetManpowerState = {
+const initialState: TargetManpowerState = {
   list: {},
   selectedRoles: [],
 };
@@ -17,7 +17,7 @@ const reducer = createReducer(initialState, (builder) => {
     state.list = action.payload
   })
 
-  builder.addCase(setSelectedRoles, (state, action) => {
+  builder.addCase(fetchSelectedRolesSuccess, (state, action) => {
     state.selectedRoles = action.payload
   })
 })
