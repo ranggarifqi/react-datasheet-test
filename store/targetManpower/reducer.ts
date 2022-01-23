@@ -2,21 +2,23 @@ import * as _ from "lodash";
 
 import { createReducer } from "@reduxjs/toolkit";
 import { compactArray } from "../../commons/helpers";
-import { TargetManpowerCell, TargetManpowerDaySum } from "../../commons/models";
+import { DATE_ONLY_FORMAT, TargetManpowerCell, TargetManpowerDaySum } from "../../commons/models";
 import {
   fetchManpowerDayCellsRequest,
   fetchManpowerDayCellsSuccess,
   fetchManpowerDaySumSuccess,
+  toggleRowExpanded,
 } from "./actions";
+import { format, parse } from "date-fns";
 
 type RowIndexMapping = {
-  [rowIdx: number]: boolean
-}
+  [date: string]: boolean;
+};
 
 export interface TargetManpowerState {
   list: Dict<TargetManpowerCell[]>;
   selectedRoles: string[];
-  daySum: Dict<TargetManpowerDaySum[]>;
+  daySum: Dict<TargetManpowerDaySum[]>; // grouped by date
   isRowFetching: RowIndexMapping;
   isRowExpanded: RowIndexMapping;
 }
@@ -31,7 +33,8 @@ const initialState: TargetManpowerState = {
 
 const reducer = createReducer(initialState, (builder) => {
   builder.addCase(fetchManpowerDaySumSuccess, (state, action) => {
-    const mappedRoles = action.payload.map((v) => v.role);
+    const ordered = _.orderBy(action.payload, ['order'], ['asc'])
+    const mappedRoles = ordered.map((v) => v.role);
     const compactRoles = compactArray(mappedRoles);
 
     const groupedDaySum: Dict<TargetManpowerDaySum[]> = _.groupBy(
@@ -43,20 +46,31 @@ const reducer = createReducer(initialState, (builder) => {
     state.selectedRoles = compactRoles;
   });
 
-  builder.addCase(fetchManpowerDayCellsRequest, (state, action) => {
-    state.isRowFetching[action.payload] = true
+  builder.addCase(toggleRowExpanded, (state, action) => {
+    const { date, isExpanded } = action.payload
+    state.isRowExpanded[date] = isExpanded
   })
 
+  builder.addCase(fetchManpowerDayCellsRequest, (state, action) => {
+    state.isRowFetching[action.payload] = true;
+  });
+
   builder.addCase(fetchManpowerDayCellsSuccess, (state, action) => {
-    const { rowIdx, targetManpowerCells } = action.payload
+    const { date, targetManpowerCells } = action.payload;
 
     const groupedByDate: Dict<TargetManpowerCell[]> = _.groupBy(
       targetManpowerCells,
-      "timeStart"
+      (cell) => {
+        const parsed = parse(cell.timeStart, 'yyyy-MM-dd HH:mm:ss', new Date())
+        console.log('parsed', parsed)
+        return format(parsed, DATE_ONLY_FORMAT)
+      }
     );
+
+
     state.list = { ...state.list, ...groupedByDate };
-    state.isRowFetching[rowIdx] = false
-    state.isRowExpanded[rowIdx] = true
+    state.isRowFetching[date] = false;
+    state.isRowExpanded[date] = true;
   });
 });
 

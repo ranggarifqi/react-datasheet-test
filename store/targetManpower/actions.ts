@@ -5,6 +5,12 @@ export const setList = createAction<Dict<TargetManpowerCell[]>>(
   "targetManpower/setList"
 );
 
+interface ToggleRowExpandedPaylaod {
+  date: string,
+  isExpanded: boolean,
+}
+export const toggleRowExpanded = createAction<ToggleRowExpandedPaylaod>('targetManpower/toggleRowExpanded')
+
 export const fetchManpowerDaySumRequest = createAction(
   "targetManpower/fetchManpowerDaySumRequest"
 );
@@ -15,12 +21,12 @@ export const fetchManpowerDaySumError = createAction<Error>(
   "targetManpower/fetchManpowerDaySumError"
 );
 
-export const fetchManpowerDayCellsRequest = createAction<number>(
+export const fetchManpowerDayCellsRequest = createAction<string>(
   "targetManpower/fetchManpowerDayCellsRequest"
 );
 
 interface fetchManpowerDayCellsSuccessPayload {
-  rowIdx: number,
+  date: string,
   targetManpowerCells: TargetManpowerCell[]
 }
 export const fetchManpowerDayCellsSuccess = createAction<fetchManpowerDayCellsSuccessPayload>(

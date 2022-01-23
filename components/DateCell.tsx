@@ -1,7 +1,12 @@
 import { ReactNode } from "react";
 import { useDispatch } from "react-redux";
 import { Cell } from "../commons/types";
+import { useAppSelector } from "../hooks";
 import { fetchTargetManpowerCells } from "../store/targetManpower/operations";
+import {
+  sltIsRowExpanded,
+  sltIsRowFetching,
+} from "../store/targetManpower/selector";
 
 type Props = {
   row: number;
@@ -11,17 +16,24 @@ type Props = {
 };
 
 const DateCell = (props: Props) => {
-  const { children, row } = props;
+  const { children, row, cell } = props;
   const dispatch = useDispatch();
 
+  const isRowExpandedMapping = useAppSelector(sltIsRowExpanded);
+  const isRowExpanded = isRowExpandedMapping[cell.date];
+
+  const isRowFetchingMapping = useAppSelector(sltIsRowFetching);
+  const isRowFetching = isRowFetchingMapping[cell.date];
+
   const onClick = () => {
-    console.log('zzzz')
-    dispatch(fetchTargetManpowerCells(row));
+    dispatch(fetchTargetManpowerCells(cell.date));
   };
+
+  const symbol = isRowFetching ? "?" : isRowExpanded ? "^" : "V";
 
   return (
     <td>
-      <span onClick={onClick}>V</span> {children}
+      <span onClick={onClick}>{symbol}</span> {children}
     </td>
   );
 };
