@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { createSelector } from "@reduxjs/toolkit";
-import { add, format, startOfISOWeek } from "date-fns";
+import { add, format, parse, startOfISOWeek } from "date-fns";
 import { RootState } from "..";
 import { Column, defaultColumns } from "../../commons/columns";
 import { Cell } from "../../commons/types";
@@ -110,11 +110,15 @@ export const sltCells = createSelector(
 
             const temp = list[date][key] ?? [];
 
+            const timeString = getTimeString(i);
+            const dateTimeString = formatDateTimeString(date, timeString);
+            console.log(dateTimeString)
+
             switch (key) {
               case "date": {
                 return {
                   isDaySum: false,
-                  value: getTimeString(i),
+                  value: timeString,
                   disableEvents: false,
                   date,
                 };
@@ -130,7 +134,7 @@ export const sltCells = createSelector(
               default: {
                 return {
                   isDaySum: false,
-                  value: temp[i]?.manPower ?? 0,
+                  value: temp[dateTimeString]?.manPower ?? 0,
                   disableEvents: false,
                   date,
                 };
@@ -148,8 +152,15 @@ export const sltCells = createSelector(
 );
 
 const getTimeString = (i: number = 0) => {
-  const hour = Math.floor(i/2)
+  const hour = Math.floor(i / 2);
   const minute = i % 2 === 0 ? 0 : 30; // getting minutes of the hour in 0-55 format
 
-  return `${('0' + hour).slice(-2)} : ${('0' + minute).slice(-2)}`;
+  return `${("0" + hour).slice(-2)}:${("0" + minute).slice(-2)}`;
+};
+
+const formatDateTimeString = (rawDate: string, time: string) => {
+  const date = parse(rawDate, DATE_ONLY_FORMAT, new Date());
+  const formatted = format(date, 'yyyy-MM-dd');
+
+  return `${formatted} ${time}:00`;
 };

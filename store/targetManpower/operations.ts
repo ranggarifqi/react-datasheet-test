@@ -59,15 +59,15 @@ export const fetchTargetManpowerCells = (
   date: string
 ): ThunkAction<Promise<void>, RootState, {}, TargetManpowerActions> => {
   return async (dispatch, getState) => {
-    const state = getState()
+    const state = getState();
 
-    const isRowExpanded = sltIsRowExpanded(state)
+    const isRowExpanded = sltIsRowExpanded(state);
 
-    console.log('ranggaxxx', isRowExpanded)
+    console.log("ranggaxxx", isRowExpanded);
 
     if (!!isRowExpanded[date]) {
-      dispatch(toggleRowExpanded({ date, isExpanded: false }))
-      return 
+      dispatch(toggleRowExpanded({ date, isExpanded: false }));
+      return;
     }
 
     dispatch(fetchManpowerDayCellsRequest(date));
@@ -95,13 +95,33 @@ const getDummyManpowerCells = (date: string): TargetManpowerCell[] => {
         weekStart: "2022-01-17",
         timeStart: "2022-01-17 08:00:00",
         timeEnd: "2022-01-17 08:30:00",
-      },{
+      },
+      {
         id: "power1",
         role: "Chef",
         manPower: 2,
         weekStart: "2022-01-17",
         timeStart: "2022-01-17 08:30:00",
         timeEnd: "2022-01-17 09:00:00",
+      },
+      {
+        id: "power1",
+        role: "Chef",
+        manPower: 2,
+        weekStart: "2022-01-17",
+        timeStart: "2022-01-17 15:30:00",
+        timeEnd: "2022-01-17 16:00:00",
+      },
+    ];
+  } else if (date === "19 Jan 2022") {
+    return [
+      {
+        id: "power1",
+        role: "Bartender",
+        manPower: 2,
+        weekStart: "2022-01-19",
+        timeStart: "2022-01-19 08:00:00",
+        timeEnd: "2022-01-19 08:30:00",
       },
     ];
   }

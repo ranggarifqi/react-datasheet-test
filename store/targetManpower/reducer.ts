@@ -21,14 +21,16 @@ type RowIndexMapping = {
 
 interface List {
   [date: string]: {
-    [role: string]: TargetManpowerCell[];
+    [role: string]: {
+      [timeStart: string]: TargetManpowerCell;
+    };
   };
 }
 
 interface DaySum {
   [date: string]: {
-    [role: string]: TargetManpowerDaySum
-  }
+    [role: string]: TargetManpowerDaySum;
+  };
 }
 
 export interface TargetManpowerState {
@@ -58,7 +60,10 @@ const reducer = createReducer(initialState, (builder) => {
       "date"
     );
 
-    const daySumGroupedByDateAndRole: DaySum = _.mapValues(groupedDaySum, (daysum) => _.keyBy(daysum,'role'))
+    const daySumGroupedByDateAndRole: DaySum = _.mapValues(
+      groupedDaySum,
+      (daysum) => _.keyBy(daysum, "role")
+    );
 
     state.daySum = daySumGroupedByDateAndRole;
     state.selectedRoles = compactRoles;
@@ -81,8 +86,16 @@ const reducer = createReducer(initialState, (builder) => {
       "role"
     );
 
+    const keyedByTimeStart = _.mapValues(groupedByRole, (cells, role) => {
+      const keyed: Dict<TargetManpowerCell> = _.keyBy(
+        groupedByRole[role],
+        "timeStart"
+      );
+      return keyed;
+    });
+
     const list: List = {
-      [date]: groupedByRole,
+      [date]: keyedByTimeStart,
     };
 
     state.list = { ...state.list, ...list };
