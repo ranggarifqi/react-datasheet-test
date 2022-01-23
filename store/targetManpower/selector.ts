@@ -80,6 +80,7 @@ export const sltCells = createSelector(
               value: date,
               disableEvents: true,
               date,
+              column: key
             };
           }
           case "total": {
@@ -88,6 +89,7 @@ export const sltCells = createSelector(
               value: total,
               disableEvents: true,
               date,
+              column: key
             };
           }
           default: {
@@ -96,6 +98,7 @@ export const sltCells = createSelector(
               value: daySum[key]?.value ?? 0,
               disableEvents: true,
               date,
+              column: key
             };
           }
         }
@@ -112,23 +115,24 @@ export const sltCells = createSelector(
 
             const timeString = getTimeString(i);
             const dateTimeString = formatDateTimeString(date, timeString);
-            console.log(dateTimeString)
 
             switch (key) {
               case "date": {
                 return {
                   isDaySum: false,
                   value: timeString,
-                  disableEvents: false,
+                  disableEvents: true,
                   date,
+                  column: key
                 };
               }
               case "total": {
                 return {
                   isDaySum: false,
                   value: 0,
-                  disableEvents: false,
+                  disableEvents: true,
                   date,
+                  column: key
                 };
               }
               default: {
@@ -137,6 +141,7 @@ export const sltCells = createSelector(
                   value: temp[dateTimeString]?.manPower ?? 0,
                   disableEvents: false,
                   date,
+                  column: key
                 };
               }
             }

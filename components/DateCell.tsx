@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
+import ReactDataSheet from "react-datasheet";
 import { useDispatch } from "react-redux";
-import { Cell } from "../commons/types";
+import { Cell, CellValue } from "../commons/types";
 import { useAppSelector } from "../hooks";
 import { fetchTargetManpowerCells } from "../store/targetManpower/operations";
 import {
@@ -8,15 +9,19 @@ import {
   sltIsRowFetching,
 } from "../store/targetManpower/selector";
 
-type Props = {
-  row: number;
-  col: number;
-  cell: Cell;
-  children: ReactNode;
-};
-
-const DateCell = (props: Props) => {
-  const { children, row, cell } = props;
+const DateCell = (props: ReactDataSheet.CellRendererProps<Cell, CellValue>) => {
+  const {
+    cell,
+    row,
+    col,
+    attributesRenderer,
+    selected,
+    editing,
+    updated,
+    style,
+    children,
+    ...rest
+  } = props;
   const dispatch = useDispatch();
 
   const isRowExpandedMapping = useAppSelector(sltIsRowExpanded);
@@ -32,7 +37,7 @@ const DateCell = (props: Props) => {
   const symbol = isRowFetching ? "?" : isRowExpanded ? "^" : "V";
 
   return (
-    <td>
+    <td {...rest}>
       <span onClick={onClick}>
         {getSymbol(cell.isDaySum, isRowFetching, isRowExpanded)}
       </span>{" "}

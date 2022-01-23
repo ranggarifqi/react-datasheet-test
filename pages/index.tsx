@@ -34,6 +34,22 @@ const Home: NextPage = () => {
     []
   );
 
+  const dataEditor = (
+    props: ReactDataSheet.DataEditorProps<Cell, CellValue>
+  ) => {
+    return (
+      <input
+        type="text"
+        autoFocus
+        onKeyDown={props.onKeyDown}
+        onChange={(e) => {
+          props.onChange(e.target.value);
+        }}
+        value={`${props.value}`}
+      />
+    );
+  };
+
   return (
     <div className={styles.container}>
       <MyReactDataSheet
@@ -42,6 +58,7 @@ const Home: NextPage = () => {
         dataRenderer={(cell) => cell.value}
         sheetRenderer={onSheetRenderer}
         cellRenderer={onCellRenderer}
+        dataEditor={dataEditor}
         onCellsChanged={(changes) => {
           console.log(changes);
           // const newGrid = grid.map((row) => [...row]);

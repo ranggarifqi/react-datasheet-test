@@ -6,11 +6,27 @@ import DateCell from "./DateCell";
 const CellRenderer = (
   props: ReactDataSheet.CellRendererProps<Cell, CellValue>
 ) => {
-  const { row, col, cell } = props;
+  const {
+    cell,
+    row,
+    col,
+    attributesRenderer,
+    selected,
+    editing,
+    updated,
+    style,
+    children,
+    ...rest
+  } = props;
+
   if (defaultColumns[col]?.key === "date") {
-    return <DateCell row={row} col={col} cell={cell}>{props.children}</DateCell>;
+    return (
+      <DateCell {...props}>
+        {props.children}
+      </DateCell>
+    );
   }
-  return <td>{props.children}</td>;
+  return <td {...rest}>{props.children}</td>;
 };
 
 export default CellRenderer;

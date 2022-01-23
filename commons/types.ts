@@ -9,4 +9,5 @@ export interface Cell extends ReactDataSheet.Cell<Cell, CellValue> {
   isDaySum: boolean;
   timeStart?: string;
   timeEnd?: string;
+  column: string;
 }
