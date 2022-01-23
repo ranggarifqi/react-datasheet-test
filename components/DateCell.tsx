@@ -33,9 +33,32 @@ const DateCell = (props: Props) => {
 
   return (
     <td>
-      <span onClick={onClick}>{symbol}</span> {children}
+      <span onClick={onClick}>
+        {getSymbol(cell.isDaySum, isRowFetching, isRowExpanded)}
+      </span>{" "}
+      {children}
     </td>
   );
+};
+
+const getSymbol = (
+  isDaySum: boolean,
+  isRowFetching: boolean,
+  isRowExpanded: boolean
+) => {
+  if (!isDaySum) {
+    return "";
+  }
+
+  if (isRowFetching) {
+    return "?";
+  }
+
+  if (isRowExpanded) {
+    return "^";
+  }
+
+  return "V";
 };
 
 export default DateCell;

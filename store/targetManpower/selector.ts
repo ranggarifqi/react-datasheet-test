@@ -8,6 +8,11 @@ import { DATE_ONLY_FORMAT } from "../../commons/models";
 
 const sltTargetManpower = (state: RootState) => state.targetManpower;
 
+const sltList = createSelector(
+  sltTargetManpower,
+  (targetManpower) => targetManpower.list
+);
+
 const sltSelectedRoles = createSelector(sltTargetManpower, (targetManpower) => {
   return targetManpower.selectedRoles;
 });
@@ -50,11 +55,13 @@ const getWeekDates = () => {
 };
 
 export const sltCells = createSelector(
-  [sltDaySum, sltColumns, sltIsRowExpanded],
-  (daySums, columns, isRowExpandedMapping) => {
+  [sltDaySum, sltColumns, sltIsRowExpanded, sltList],
+  (daySums, columns, isRowExpandedMapping, list) => {
     const weekDates = getWeekDates();
 
-    const cells: Cell[][] = weekDates.map((date) => {
+    const result: Cell[][] = [];
+
+    for (const date of weekDates) {
       const daySum = daySums[date] ?? {};
       const daySumValues = daySum ? Object.values(daySum) : [];
 
@@ -63,7 +70,7 @@ export const sltCells = createSelector(
           return total + ds.value;
         }, 0) ?? 0;
 
-      const result: Cell[] = columns.map<Cell>((column) => {
+      const rowArray: Cell[] = columns.map<Cell>((column) => {
         const key = column.key;
 
         switch (key) {
@@ -94,44 +101,129 @@ export const sltCells = createSelector(
         }
       });
 
-      // if (isRowExpandedMapping[date]) {
-      //   for (let i = 0; i < 5; i++) {
-      //     const child: Cell[] = columns.map<Cell>((column) => {
-      //       const key = column.key;
+      result.push(rowArray);
 
-      //       switch (key) {
-      //         case "date": {
-      //           return {
-      //             isDaySum: true,
-      //             value: 'z',
-      //             disableEvents: true,
-      //             date,
-      //           };
-      //         }
-      //         case "total": {
-      //           return {
-      //             isDaySum: true,
-      //             value: 0,
-      //             disableEvents: true,
-      //             date,
-      //           };
-      //         }
-      //         default: {
-      //           return {
-      //             isDaySum: true,
-      //             value: daySumByRole[key]?.value ?? 0,
-      //             disableEvents: true,
-      //             date,
-      //           };
-      //         }
-      //       }
-      //     });
-      //   }
-      // }
+      if (isRowExpandedMapping[date]) {
+        for (let i = 0; i < 5; i++) {
+          const childArr: Cell[] = columns.map<Cell>((column) => {
+            const key = column.key;
 
-      return result;
-    });
+            switch (key) {
+              case "date": {
+                return {
+                  isDaySum: false,
+                  value: "z",
+                  disableEvents: false,
+                  date,
+                };
+              }
+              case "total": {
+                return {
+                  isDaySum: false,
+                  value: 0,
+                  disableEvents: false,
+                  date,
+                };
+              }
+              default: {
+                return {
+                  isDaySum: false,
+                  // value: list[date][key][i]?.manPower ?? 0,
+                  value: 0,
+                  disableEvents: false,
+                  date,
+                };
+              }
+            }
+          });
 
-    return cells;
+          result.push(childArr);
+        }
+      }
+    }
+
+    return result;
+
+    // const cells: Cell[][] = weekDates.map((date) => {
+    //   const daySum = daySums[date] ?? {};
+    //   const daySumValues = daySum ? Object.values(daySum) : [];
+
+    //   const total =
+    //     daySumValues.reduce((total, ds) => {
+    //       return total + ds.value;
+    //     }, 0) ?? 0;
+
+    //   const rowArray: Cell[] = columns.map<Cell>((column) => {
+    //     const key = column.key;
+
+    //     switch (key) {
+    //       case "date": {
+    //         return {
+    //           isDaySum: true,
+    //           value: date,
+    //           disableEvents: true,
+    //           date,
+    //         };
+    //       }
+    //       case "total": {
+    //         return {
+    //           isDaySum: true,
+    //           value: total,
+    //           disableEvents: true,
+    //           date,
+    //         };
+    //       }
+    //       default: {
+    //         return {
+    //           isDaySum: true,
+    //           value: daySum[key]?.value ?? 0,
+    //           disableEvents: true,
+    //           date,
+    //         };
+    //       }
+    //     }
+    //   });
+
+    //   // if (isRowExpandedMapping[date]) {
+    //   //   for (let i = 0; i < 5; i++) {
+    //   //     const childArr: Cell[] = columns.map<Cell>((column) => {
+    //   //       const key = column.key;
+
+    //   //       switch (key) {
+    //   //         case "date": {
+    //   //           return {
+    //   //             isDaySum: true,
+    //   //             value: 'z',
+    //   //             disableEvents: true,
+    //   //             date,
+    //   //           };
+    //   //         }
+    //   //         case "total": {
+    //   //           return {
+    //   //             isDaySum: true,
+    //   //             value: 0,
+    //   //             disableEvents: true,
+    //   //             date,
+    //   //           };
+    //   //         }
+    //   //         default: {
+    //   //           return {
+    //   //             isDaySum: true,
+    //   //             value: daySumByRole[key]?.value ?? 0,
+    //   //             disableEvents: true,
+    //   //             date,
+    //   //           };
+    //   //         }
+    //   //       }
+    //   //     });
+
+    //   //     rowArray.push(...childArr)
+    //   //   }
+    //   // }
+
+    //   return rowArray;
+    // });
+
+    // return cells;
   }
 );
