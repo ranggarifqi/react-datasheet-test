@@ -104,15 +104,17 @@ export const sltCells = createSelector(
       result.push(rowArray);
 
       if (isRowExpandedMapping[date]) {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 48; i++) {
           const childArr: Cell[] = columns.map<Cell>((column) => {
             const key = column.key;
+
+            const temp = list[date][key] ?? [];
 
             switch (key) {
               case "date": {
                 return {
                   isDaySum: false,
-                  value: "z",
+                  value: getTimeString(i),
                   disableEvents: false,
                   date,
                 };
@@ -128,8 +130,7 @@ export const sltCells = createSelector(
               default: {
                 return {
                   isDaySum: false,
-                  // value: list[date][key][i]?.manPower ?? 0,
-                  value: 0,
+                  value: temp[i]?.manPower ?? 0,
                   disableEvents: false,
                   date,
                 };
@@ -143,87 +144,12 @@ export const sltCells = createSelector(
     }
 
     return result;
-
-    // const cells: Cell[][] = weekDates.map((date) => {
-    //   const daySum = daySums[date] ?? {};
-    //   const daySumValues = daySum ? Object.values(daySum) : [];
-
-    //   const total =
-    //     daySumValues.reduce((total, ds) => {
-    //       return total + ds.value;
-    //     }, 0) ?? 0;
-
-    //   const rowArray: Cell[] = columns.map<Cell>((column) => {
-    //     const key = column.key;
-
-    //     switch (key) {
-    //       case "date": {
-    //         return {
-    //           isDaySum: true,
-    //           value: date,
-    //           disableEvents: true,
-    //           date,
-    //         };
-    //       }
-    //       case "total": {
-    //         return {
-    //           isDaySum: true,
-    //           value: total,
-    //           disableEvents: true,
-    //           date,
-    //         };
-    //       }
-    //       default: {
-    //         return {
-    //           isDaySum: true,
-    //           value: daySum[key]?.value ?? 0,
-    //           disableEvents: true,
-    //           date,
-    //         };
-    //       }
-    //     }
-    //   });
-
-    //   // if (isRowExpandedMapping[date]) {
-    //   //   for (let i = 0; i < 5; i++) {
-    //   //     const childArr: Cell[] = columns.map<Cell>((column) => {
-    //   //       const key = column.key;
-
-    //   //       switch (key) {
-    //   //         case "date": {
-    //   //           return {
-    //   //             isDaySum: true,
-    //   //             value: 'z',
-    //   //             disableEvents: true,
-    //   //             date,
-    //   //           };
-    //   //         }
-    //   //         case "total": {
-    //   //           return {
-    //   //             isDaySum: true,
-    //   //             value: 0,
-    //   //             disableEvents: true,
-    //   //             date,
-    //   //           };
-    //   //         }
-    //   //         default: {
-    //   //           return {
-    //   //             isDaySum: true,
-    //   //             value: daySumByRole[key]?.value ?? 0,
-    //   //             disableEvents: true,
-    //   //             date,
-    //   //           };
-    //   //         }
-    //   //       }
-    //   //     });
-
-    //   //     rowArray.push(...childArr)
-    //   //   }
-    //   // }
-
-    //   return rowArray;
-    // });
-
-    // return cells;
   }
 );
+
+const getTimeString = (i: number = 0) => {
+  const hour = Math.floor(i/2)
+  const minute = i % 2 === 0 ? 0 : 30; // getting minutes of the hour in 0-55 format
+
+  return `${('0' + hour).slice(-2)} : ${('0' + minute).slice(-2)}`;
+};
