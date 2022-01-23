@@ -2,7 +2,11 @@ import * as _ from "lodash";
 
 import { createReducer } from "@reduxjs/toolkit";
 import { compactArray } from "../../commons/helpers";
-import { DATE_ONLY_FORMAT, TargetManpowerCell, TargetManpowerDaySum } from "../../commons/models";
+import {
+  DATE_ONLY_FORMAT,
+  TargetManpowerCell,
+  TargetManpowerDaySum,
+} from "../../commons/models";
 import {
   fetchManpowerDayCellsRequest,
   fetchManpowerDayCellsSuccess,
@@ -15,10 +19,22 @@ type RowIndexMapping = {
   [date: string]: boolean;
 };
 
+interface List {
+  [date: string]: {
+    [role: string]: TargetManpowerCell[];
+  };
+}
+
+interface DaySum {
+  [date: string]: {
+    [role: string]: TargetManpowerDaySum
+  }
+}
+
 export interface TargetManpowerState {
-  list: Dict<TargetManpowerCell[]>;
+  list: List;
   selectedRoles: string[];
-  daySum: Dict<TargetManpowerDaySum[]>; // grouped by date
+  daySum: DaySum; // grouped by date
   isRowFetching: RowIndexMapping;
   isRowExpanded: RowIndexMapping;
 }
@@ -33,7 +49,7 @@ const initialState: TargetManpowerState = {
 
 const reducer = createReducer(initialState, (builder) => {
   builder.addCase(fetchManpowerDaySumSuccess, (state, action) => {
-    const ordered = _.orderBy(action.payload, ['order'], ['asc'])
+    const ordered = _.orderBy(action.payload, ["order"], ["asc"]);
     const mappedRoles = ordered.map((v) => v.role);
     const compactRoles = compactArray(mappedRoles);
 
@@ -42,14 +58,16 @@ const reducer = createReducer(initialState, (builder) => {
       "date"
     );
 
-    state.daySum = groupedDaySum;
+    const daySumGroupedByDateAndRole: DaySum = _.mapValues(groupedDaySum, (daysum) => _.keyBy(daysum,'role'))
+
+    state.daySum = daySumGroupedByDateAndRole;
     state.selectedRoles = compactRoles;
   });
 
   builder.addCase(toggleRowExpanded, (state, action) => {
-    const { date, isExpanded } = action.payload
-    state.isRowExpanded[date] = isExpanded
-  })
+    const { date, isExpanded } = action.payload;
+    state.isRowExpanded[date] = isExpanded;
+  });
 
   builder.addCase(fetchManpowerDayCellsRequest, (state, action) => {
     state.isRowFetching[action.payload] = true;
@@ -58,17 +76,16 @@ const reducer = createReducer(initialState, (builder) => {
   builder.addCase(fetchManpowerDayCellsSuccess, (state, action) => {
     const { date, targetManpowerCells } = action.payload;
 
-    const groupedByDate: Dict<TargetManpowerCell[]> = _.groupBy(
+    const groupedByRole: Dict<TargetManpowerCell[]> = _.groupBy(
       targetManpowerCells,
-      (cell) => {
-        const parsed = parse(cell.timeStart, 'yyyy-MM-dd HH:mm:ss', new Date())
-        console.log('parsed', parsed)
-        return format(parsed, DATE_ONLY_FORMAT)
-      }
+      "role"
     );
 
+    const list: List = {
+      [date]: groupedByRole,
+    };
 
-    state.list = { ...state.list, ...groupedByDate };
+    state.list = { ...state.list, ...list };
     state.isRowFetching[date] = false;
     state.isRowExpanded[date] = true;
   });

@@ -50,16 +50,16 @@ const getWeekDates = () => {
 };
 
 export const sltCells = createSelector(
-  [sltDaySum, sltColumns],
-  (daySums, columns) => {
+  [sltDaySum, sltColumns, sltIsRowExpanded],
+  (daySums, columns, isRowExpandedMapping) => {
     const weekDates = getWeekDates();
 
     const cells: Cell[][] = weekDates.map((date) => {
-      const daySum = daySums[date];
-      const daySumByRole = _.keyBy(daySum, "role");
+      const daySum = daySums[date] ?? {};
+      const daySumValues = daySum ? Object.values(daySum) : [];
 
       const total =
-        daySum?.reduce((total, ds) => {
+        daySumValues.reduce((total, ds) => {
           return total + ds.value;
         }, 0) ?? 0;
 
@@ -86,13 +86,48 @@ export const sltCells = createSelector(
           default: {
             return {
               isDaySum: true,
-              value: daySumByRole[key]?.value ?? 0,
+              value: daySum[key]?.value ?? 0,
               disableEvents: true,
               date,
             };
           }
         }
       });
+
+      // if (isRowExpandedMapping[date]) {
+      //   for (let i = 0; i < 5; i++) {
+      //     const child: Cell[] = columns.map<Cell>((column) => {
+      //       const key = column.key;
+
+      //       switch (key) {
+      //         case "date": {
+      //           return {
+      //             isDaySum: true,
+      //             value: 'z',
+      //             disableEvents: true,
+      //             date,
+      //           };
+      //         }
+      //         case "total": {
+      //           return {
+      //             isDaySum: true,
+      //             value: 0,
+      //             disableEvents: true,
+      //             date,
+      //           };
+      //         }
+      //         default: {
+      //           return {
+      //             isDaySum: true,
+      //             value: daySumByRole[key]?.value ?? 0,
+      //             disableEvents: true,
+      //             date,
+      //           };
+      //         }
+      //       }
+      //     });
+      //   }
+      // }
 
       return result;
     });
