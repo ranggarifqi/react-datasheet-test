@@ -104,13 +104,12 @@ const reducer = createReducer(initialState, (builder) => {
   });
 
   builder.addCase(setManpowerCells, (state, action) => {
-    console.log(action.payload);
-    // const newList: List = {};
+    const newList: List = { ...state.list };
 
     action.payload.forEach(({ cell, value: newValue }) => {
       if (cell) {
         const { timeStart, date, column, timeEnd, weekStart } = cell;
-        _.set(state.list, `${date}.${column}.${timeStart}`, {
+        _.set(newList, `${date}.${column}.${timeStart}`, {
           id: "z",
           manPower:
             typeof newValue === "string"
@@ -123,9 +122,7 @@ const reducer = createReducer(initialState, (builder) => {
         });
       }
     });
-    // console.log('before', state)
-    // state.list = { ...state.list, ...newList };
-    // console.log('after', state.list)
+    state.list = { ...state.list, ...newList };
   });
 });
 
