@@ -8,10 +8,12 @@ import {
 } from "./actions";
 import { wait } from "../../commons/helpers";
 import { TargetManpowerActions } from ".";
-import { TargetManpowerCell, TargetManpowerDaySum } from "../../commons/models";
+import { DATE_ONLY_FORMAT, TargetManpowerCell, TargetManpowerDaySum } from "../../commons/models";
 import { RootState } from "..";
 import { useAppSelector } from "../../hooks";
 import { sltCells, sltIsRowExpanded } from "./selector";
+import format from "date-fns/format";
+import { add } from "date-fns";
 
 export const fetchManpowerDaySum = (): ThunkAction<
   Promise<void>,
@@ -24,27 +26,30 @@ export const fetchManpowerDaySum = (): ThunkAction<
 
     await wait(1000);
 
+    const today = format(new Date(), DATE_ONLY_FORMAT)
+    const nextDay = format(add(new Date(), { days: 1 }), DATE_ONLY_FORMAT)
+
     const res: TargetManpowerDaySum[] = [
       {
-        date: "17 Jan 2022",
+        date: today,
         role: "Chef",
         value: 2,
         order: 1,
       },
       {
-        date: "17 Jan 2022",
+        date: today,
         role: "Bartender",
         value: 2,
         order: 3,
       },
       {
-        date: "17 Jan 2022",
+        date: today,
         role: "Cleaning Service",
         value: 1,
         order: 2,
       },
       {
-        date: "18 Jan 2022",
+        date: nextDay,
         role: "Chef",
         value: 4,
         order: 1,
@@ -86,42 +91,44 @@ export const fetchTargetManpowerCells = (
 };
 
 const getDummyManpowerCells = (date: string): TargetManpowerCell[] => {
-  if (date === "17 Jan 2022") {
+  const today = format(new Date(), DATE_ONLY_FORMAT)
+  const nextDay = format(add(new Date(), { days: 1 }), DATE_ONLY_FORMAT)
+  if (date === today) {
     return [
       {
         id: "power1",
         role: "Chef",
         manPower: 2,
-        weekStart: "2022-01-17",
-        timeStart: "2022-01-17 08:00:00",
-        timeEnd: "2022-01-17 08:30:00",
+        weekStart: "2022-01-24",
+        timeStart: "2022-01-24 08:00:00",
+        timeEnd: "2022-01-24 08:30:00",
       },
       {
         id: "power1",
         role: "Chef",
         manPower: 2,
-        weekStart: "2022-01-17",
-        timeStart: "2022-01-17 08:30:00",
-        timeEnd: "2022-01-17 09:00:00",
+        weekStart: "2022-01-24",
+        timeStart: "2022-01-24 08:30:00",
+        timeEnd: "2022-01-24 09:00:00",
       },
       {
         id: "power1",
         role: "Chef",
         manPower: 2,
-        weekStart: "2022-01-17",
-        timeStart: "2022-01-17 15:30:00",
-        timeEnd: "2022-01-17 16:00:00",
+        weekStart: "2022-01-24",
+        timeStart: "2022-01-24 15:30:00",
+        timeEnd: "2022-01-24 16:00:00",
       },
     ];
-  } else if (date === "19 Jan 2022") {
+  } else if (date === nextDay) {
     return [
       {
         id: "power1",
         role: "Bartender",
         manPower: 2,
-        weekStart: "2022-01-19",
-        timeStart: "2022-01-19 08:00:00",
-        timeEnd: "2022-01-19 08:30:00",
+        weekStart: "2022-01-25",
+        timeStart: "2022-01-25 08:00:00",
+        timeEnd: "2022-01-25 08:30:00",
       },
     ];
   }

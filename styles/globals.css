@@ -14,3 +14,11 @@ a {
 * {
   box-sizing: border-box;
 }
+
+table .cell {
+  cursor: crosshair;
+}
+
+table .cell.selected {
+  background-color: #d9d9d9;
+}
