@@ -3,11 +3,11 @@ import { TargetManpowerCell, TargetManpowerDaySum } from "./models";
 
 export type CellValue = string | number | null;
 
-export interface Cell extends ReactDataSheet.Cell<Cell, CellValue> {
+export interface Cell
+  extends ReactDataSheet.Cell<Cell, CellValue>,
+    Partial<TargetManpowerCell> {
   date: string;
   value: CellValue;
   isDaySum: boolean;
-  timeStart?: string;
-  timeEnd?: string;
   column: string;
 }

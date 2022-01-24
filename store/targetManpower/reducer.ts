@@ -11,9 +11,9 @@ import {
   fetchManpowerDayCellsRequest,
   fetchManpowerDayCellsSuccess,
   fetchManpowerDaySumSuccess,
+  setManpowerCells,
   toggleRowExpanded,
 } from "./actions";
-import { format, parse } from "date-fns";
 
 type RowIndexMapping = {
   [date: string]: boolean;
@@ -101,6 +101,31 @@ const reducer = createReducer(initialState, (builder) => {
     state.list = { ...state.list, ...list };
     state.isRowFetching[date] = false;
     state.isRowExpanded[date] = true;
+  });
+
+  builder.addCase(setManpowerCells, (state, action) => {
+    console.log(action.payload);
+    // const newList: List = {};
+
+    action.payload.forEach(({ cell, value: newValue }) => {
+      if (cell) {
+        const { timeStart, date, column, timeEnd, weekStart } = cell;
+        _.set(state.list, `${date}.${column}.${timeStart}`, {
+          id: "z",
+          manPower:
+            typeof newValue === "string"
+              ? parseInt(newValue! || "0")
+              : newValue!,
+          role: column,
+          timeStart: timeStart!,
+          timeEnd: timeEnd!,
+          weekStart: weekStart!,
+        });
+      }
+    });
+    // console.log('before', state)
+    // state.list = { ...state.list, ...newList };
+    // console.log('after', state.list)
   });
 });
 

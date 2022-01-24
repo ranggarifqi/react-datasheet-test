@@ -80,7 +80,7 @@ export const sltCells = createSelector(
               value: date,
               disableEvents: true,
               date,
-              column: key
+              column: key,
             };
           }
           case "total": {
@@ -89,7 +89,7 @@ export const sltCells = createSelector(
               value: total,
               disableEvents: true,
               date,
-              column: key
+              column: key,
             };
           }
           default: {
@@ -98,7 +98,7 @@ export const sltCells = createSelector(
               value: daySum[key]?.value ?? 0,
               disableEvents: true,
               date,
-              column: key
+              column: key,
             };
           }
         }
@@ -109,21 +109,22 @@ export const sltCells = createSelector(
       if (isRowExpandedMapping[date]) {
         for (let i = 0; i < 48; i++) {
           const childArr: Cell[] = columns.map<Cell>((column) => {
-            const key = column.key;
+            const columnKey = column.key;
 
-            const temp = list[date][key] ?? [];
+            const temp = list[date][columnKey] ?? [];
 
             const timeString = getTimeString(i);
-            const dateTimeString = formatDateTimeString(date, timeString);
+            const timeStart = formatDateTimeString(date, timeString);
+            const timeEnd = getTimeEnd(timeStart);
 
-            switch (key) {
+            switch (columnKey) {
               case "date": {
                 return {
                   isDaySum: false,
                   value: timeString,
                   disableEvents: true,
                   date,
-                  column: key
+                  column: columnKey,
                 };
               }
               case "total": {
@@ -132,16 +133,20 @@ export const sltCells = createSelector(
                   value: 0,
                   disableEvents: true,
                   date,
-                  column: key
+                  column: columnKey,
                 };
               }
               default: {
                 return {
                   isDaySum: false,
-                  value: temp[dateTimeString]?.manPower ?? 0,
+                  value: temp[timeStart]?.manPower ?? 0,
                   disableEvents: false,
                   date,
-                  column: key
+                  column: columnKey,
+                  ...temp[timeStart],
+                  timeStart,
+                  timeEnd,
+                  weekStart: weekDates[0],
                 };
               }
             }
@@ -165,7 +170,13 @@ const getTimeString = (i: number = 0) => {
 
 const formatDateTimeString = (rawDate: string, time: string) => {
   const date = parse(rawDate, DATE_ONLY_FORMAT, new Date());
-  const formatted = format(date, 'yyyy-MM-dd');
+  const formatted = format(date, "yyyy-MM-dd");
 
   return `${formatted} ${time}:00`;
+};
+
+const getTimeEnd = (timeStart: string): string => {
+  const start = parse(timeStart, "yyyy-MM-dd HH:mm:ss", new Date());
+  const added = add(start, { minutes: 30 });
+  return format(added, "yyyy-MM-dd HH:mm:ss");
 };

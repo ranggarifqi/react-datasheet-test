@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { fetchManpowerDaySum } from "../store/targetManpower/operations";
 import { useAppSelector } from "../hooks";
 import { sltCells } from "../store/targetManpower/selector";
+import { setManpowerCells } from "../store/targetManpower/actions";
 
 export class MyReactDataSheet extends ReactDataSheet<Cell, CellValue> {}
 
@@ -60,12 +61,7 @@ const Home: NextPage = () => {
         cellRenderer={onCellRenderer}
         dataEditor={dataEditor}
         onCellsChanged={(changes) => {
-          console.log(changes);
-          // const newGrid = grid.map((row) => [...row]);
-          // changes.forEach(({ cell, row, col, value }) => {
-          //   newGrid[row][col] = { ...newGrid[row][col], value };
-          // });
-          // setGrid(newGrid);
+          dispatch(setManpowerCells(changes));
         }}
       />
     </div>
