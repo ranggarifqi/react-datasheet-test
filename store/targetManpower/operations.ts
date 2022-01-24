@@ -8,12 +8,17 @@ import {
 } from "./actions";
 import { wait } from "../../commons/helpers";
 import { TargetManpowerActions } from ".";
-import { DATE_ONLY_FORMAT, TargetManpowerCell, TargetManpowerDaySum } from "../../commons/models";
+import {
+  DATE_ONLY_FORMAT,
+  TargetManpowerCell,
+  TargetManpowerDaySum,
+} from "../../commons/models";
 import { RootState } from "..";
 import { useAppSelector } from "../../hooks";
 import { sltCells, sltIsRowExpanded } from "./selector";
 import format from "date-fns/format";
 import { add } from "date-fns";
+import startOfISOWeek from "date-fns/startOfISOWeek";
 
 export const fetchManpowerDaySum = (): ThunkAction<
   Promise<void>,
@@ -26,8 +31,8 @@ export const fetchManpowerDaySum = (): ThunkAction<
 
     await wait(1000);
 
-    const today = format(new Date(), DATE_ONLY_FORMAT)
-    const nextDay = format(add(new Date(), { days: 1 }), DATE_ONLY_FORMAT)
+    const today = format(new Date(), DATE_ONLY_FORMAT);
+    const nextDay = format(add(new Date(), { days: 1 }), DATE_ONLY_FORMAT);
 
     const res: TargetManpowerDaySum[] = [
       {
@@ -91,33 +96,38 @@ export const fetchTargetManpowerCells = (
 };
 
 const getDummyManpowerCells = (date: string): TargetManpowerCell[] => {
-  const today = format(new Date(), DATE_ONLY_FORMAT)
-  const nextDay = format(add(new Date(), { days: 1 }), DATE_ONLY_FORMAT)
+  const today = format(new Date(), DATE_ONLY_FORMAT);
+  const today2 = format(new Date(), 'yyyy-MM-dd');
+
+  const nextDay = format(add(new Date(), { days: 1 }), DATE_ONLY_FORMAT);
+  const nextDay2 = format(add(new Date(), { days: 1 }), 'yyyy-MM-dd');
+  const weekStart = format(startOfISOWeek(new Date()), DATE_ONLY_FORMAT);
+
   if (date === today) {
     return [
       {
         id: "power1",
         role: "Chef",
         manPower: 2,
-        weekStart: "2022-01-24",
-        timeStart: "2022-01-24 08:00:00",
-        timeEnd: "2022-01-24 08:30:00",
+        weekStart: weekStart,
+        timeStart: `${today2} 08:00:00`,
+        timeEnd: `${today2} 08:30:00`,
       },
       {
         id: "power1",
         role: "Chef",
         manPower: 2,
-        weekStart: "2022-01-24",
-        timeStart: "2022-01-24 08:30:00",
-        timeEnd: "2022-01-24 09:00:00",
+        weekStart: weekStart,
+        timeStart: `${today2} 08:30:00`,
+        timeEnd: `${today2} 09:00:00`,
       },
       {
         id: "power1",
         role: "Chef",
         manPower: 2,
-        weekStart: "2022-01-24",
-        timeStart: "2022-01-24 15:30:00",
-        timeEnd: "2022-01-24 16:00:00",
+        weekStart: weekStart,
+        timeStart: `${today2} 15:30:00`,
+        timeEnd: `${today2} 16:00:00`,
       },
     ];
   } else if (date === nextDay) {
@@ -126,9 +136,9 @@ const getDummyManpowerCells = (date: string): TargetManpowerCell[] => {
         id: "power1",
         role: "Bartender",
         manPower: 2,
-        weekStart: "2022-01-25",
-        timeStart: "2022-01-25 08:00:00",
-        timeEnd: "2022-01-25 08:30:00",
+        weekStart: weekStart,
+        timeStart: `${nextDay2} 08:00:00`,
+        timeEnd: `${nextDay2} 08:30:00`,
       },
     ];
   }
